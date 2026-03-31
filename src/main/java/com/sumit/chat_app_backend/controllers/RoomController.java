@@ -4,10 +4,7 @@ import com.sumit.chat_app_backend.entities.Room;
 import com.sumit.chat_app_backend.repositories.RoomRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/rooms")
@@ -37,7 +34,7 @@ public class RoomController {
 //        Room savedRoom = roomRepository.save(room);
 //
 //        return ResponseEntity.status(HttpStatus.CREATED).body(savedRoom);
-        
+
         if(roomRepository.findByRoomId(roomId) != null){
             return ResponseEntity.badRequest().body("Room already exist with this Id");
         }
@@ -47,13 +44,18 @@ public class RoomController {
         Room savedRoom = roomRepository.save(room);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(savedRoom);
+    }
 
 
+    @GetMapping("/{roomId}")
+    public ResponseEntity<?> joinRoom(@PathVariable String roomId){
+       Room room = roomRepository.findByRoomId(roomId);
 
+       if(room == null){
+           return ResponseEntity.badRequest()
+                   .body("Room Not Found :( ");
+       }
 
-
-
-
-
+       return ResponseEntity.ok(room);
     }
 }
